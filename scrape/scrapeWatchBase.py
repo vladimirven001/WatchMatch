@@ -41,17 +41,18 @@ proxy = proxies[0]
 for url in modelURLs:
     i += 1
     print(i)
-    if i == 12:
-        proxy = proxies[j]
-        j += 1
-        print(j)
-    modelPage = requests.get(url, headers=HEADERS, proxies=proxy)
+    modelPage = requests.get(url, headers=HEADERS)
     soupModel = BeautifulSoup(modelPage.content, "html.parser")
     divReferences = soupModel.find('div', class_ = 'watch-block-container')
     aTagsReferences = divReferences.find_all('a')
     for a in aTagsReferences:
         referenceURLs.append(a['href'])
-    sleep(0.1)
+    sleep(1)
 
 print(referenceURLs)
+
+data = pd.DataFrame(columns = ["brand","model","reference","name","movement","produced","caseMaterial",
+                               "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","dialColor",
+                               "dialMaterial","dialIndexes","dialHands","description"])
+
 
