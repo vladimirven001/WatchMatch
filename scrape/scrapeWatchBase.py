@@ -7,12 +7,6 @@ HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 database = requests.get("https://watchbase.com/watches", headers=HEADERS)
 soup = BeautifulSoup(database.content, "html.parser")
 
-proxies = [
-    {'http': 'http://181.129.74.58:40667', 'https': 'https://181.129.74.58:40667'},
-    {'http': 'http://105.19.63.217:9812', 'https': 'https://105.19.63.217:9812'},
-    {'http': 'http://187.217.54.84:80', 'https': 'https://187.217.54.84:80'}
-]
-
 brands = [] # List to store brand of the watch (roots of the trees)
 models = [] # List to store models (nodes of the tree)
 modelURLs = [] # List to store the URLs of each model
@@ -35,12 +29,9 @@ for ul in unorderedLists:
             modelURLs.append(a['href'])
 
 # Extract reference URLs
-i=0
-j=1
-proxy = proxies[0]
+i = 0 # counter
 for url in modelURLs:
     i += 1
-    print(i)
     modelPage = requests.get(url, headers=HEADERS)
     soupModel = BeautifulSoup(modelPage.content, "html.parser")
     divReferences = soupModel.find('div', class_ = 'watch-block-container')
@@ -51,8 +42,31 @@ for url in modelURLs:
 
 print(referenceURLs)
 
-data = pd.DataFrame(columns = ["brand","model","reference","name","movement","produced","caseMaterial",
+# Create data structure to store watch references and information
+data = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
                                "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","dialColor",
                                "dialMaterial","dialIndexes","dialHands","description"])
+
+# Get the information for each watch reference
+for url in referenceURLs:
+    watch = {"brand":"","family":"","reference":"","name":"","movement":"","produced":"","caseMaterial":"",
+                               "caseGlass":"","caseBack":"","caseShape":"","caseDiameter":"","caseHeight":"","dialColor":"",
+                               "dialMaterial":"","dialIndexes":"","dialHands":"","description":""}
+    
+    referencePage = requests.get(url, headers=HEADERS)
+    soupModel = BeautifulSoup(referencePage.content, "html.parser")
+    table = soupModel.find('table', class_ = 'info-table')
+    tableRows = table.find_all('tr')
+    for tr in tableRows:
+        collumn = tr.find('th').text.lower()
+        data = tr.find('td').text.lower()
+        watch[collumn]
+    div = soupModel.find('div', class_ = 'col-xs-6')
+    
+
+
+
+# Export watch references as .csv file
+
 
 
