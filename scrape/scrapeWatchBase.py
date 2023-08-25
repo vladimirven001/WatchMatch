@@ -20,22 +20,22 @@ modelURLs = [] # List to store the URLs of each model
 referenceURLs = [] # List to store the URLs of each watch reference (leafs of the brand trees)
 
 # Extract brand names
-mainDiv = soup.find('div', id = "brand-container")
-mainHeaders = mainDiv.find_all('h2')
-for brand in mainHeaders:
-    brands.append(brand.text.strip())
-print("found brand names")
+# mainDiv = soup.find('div', id = "brand-container")
+# mainHeaders = mainDiv.find_all('h2')
+# for brand in mainHeaders:
+#     brands.append(brand.text.strip())
+# print("found brand names")
 
 # Extract model names and model URLs
-unorderedLists = mainDiv.find_all('ul')
-for ul in unorderedLists:
-    aTags = ul.find_all('a')
-    for a in aTags:
-        txt = a.get_text()
-        if txt != "Brand":
-            models.append(txt)
-            modelURLs.append(a['href'])
-print("found modelURLs")
+# unorderedLists = mainDiv.find_all('ul')
+# for ul in unorderedLists:
+#     aTags = ul.find_all('a')
+#     for a in aTags:
+#         txt = a.get_text()
+#         if txt != "Brand":
+#             models.append(txt)
+#             modelURLs.append(a['href'])
+# print("found modelURLs")
 
 # Extract reference URLs
 # i = 0 # counter
@@ -57,7 +57,7 @@ print("found modelURLs")
 # print("found referenceURLs")
 
 # Create data structure to store watch references and information
-df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
+df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","limited","caseMaterial",
                                "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
                                "dialMaterial","dialIndexes","dialHands"])
 
@@ -123,13 +123,22 @@ start_index = 0
 #         sleep(60)
 #         done = False
 
+
+error_count=0
+
+try:
+    file2 = open("start_index.txt", 'r')
+    start_index = int(file2.read())
+except:
+    start_index = 0
+
 while start_index < len(referenceURLs):
     done = False
-    current_index = start_index
+    curr_index = start_index
     
     try:
-        for i in range(j, len(referenceURLs) - 1):
-            print("j: " + str(j))
+        for i in range(curr_index, len(referenceURLs) - 1):
+            print("curr_index: " + str(curr_index))
             watch = {"brand":"","family":"","reference":"","name":"","movement":"","produced":"","limited":"","caseMaterial":"",
                                        "caseGlass":"","caseBack":"","caseShape":"","caseDiameter":"","caseHeight":"","caseLugWidth":"","dialColor":"",
                                        "dialMaterial":"","dialIndexes":"","dialHands":""}
@@ -139,53 +148,83 @@ while start_index < len(referenceURLs):
             table = soupModel.find('table', class_ = 'info-table')
             tableRows = table.find_all('tr')
             for tr in tableRows:
-                collumn = tr.find('th').text.lower()
-                collumn = "".join(c for c in collumn if c.isalpha())
-                data = tr.find('td').text.lower()
-                watch[collumn] = data
-    
+                try:
+                    collumn = tr.find('th').text.lower()
+                    collumn = "".join(c for c in collumn if c.isalpha())
+                    data = tr.find('td').get_text(strip = True).lower()
+                    watch[collumn] = data
+                except:
+                    continue
             div = soupModel.find('div', class_ = 'col-xs-6')
 
             # Case info
             table = div.find('table', class_ = 'info-table')
             tableRows = table.find_all('tr')
             for tr in tableRows:
-                collumn = tr.find('th').text.replace(" ","")
-                collumn = "".join(c for c in collumn if c.isalpha())
-                collumn = "case" + collumn
-                data = tr.find('td').text.lower()
-                watch[collumn] = data
-
+                try:
+                    collumn = tr.find('th').text.replace(" ","")
+                    collumn = "".join(c for c in collumn if c.isalpha())
+                    collumn = "case" + collumn
+                    data = tr.find('td').get_text(strip = True).lower()
+                    watch[collumn] = data
+                except:
+                    continue
             # Dial info
             table = table.find_next('table', class_ = 'info-table')
             tableRows = table.find_all('tr')
             for tr in tableRows:
-                collumn = tr.find('th').text.replace(" ","")
-                collumn = "".join(c for c in collumn if c.isalpha())
-                collumn = "dial" + collumn
-                data = tr.find('td').text.lower()
-                watch[collumn] = data
+                try:
+                    collumn = tr.find('th').text.replace(" ","")
+                    collumn = "".join(c for c in collumn if c.isalpha())
+                    collumn = "dial" + collumn
+                    data = tr.find('td').get_text(strip = True).lower()
+                    watch[collumn] = data
+                except:
+                    continue
 
             # Add data to pandas df
             df.loc[j] = watch
-            j += 1
+            j+=1
+            curr_index += 1
         done = True
+
     except requests.exceptions.Timeout:
-        print("Request timed out at index:", current_index)
+        print("Request timed out at index: ", curr_index)
         print("Sleeping...")
         sleep(60)
+        error_count+=1
+
     except AttributeError:
-        print("Unexpected error at index:", current_index)
+        print("Unexpected error at index: ", curr_index)
+        str_df = df.to_string
+        print("current watches: " + str(str_df))
         print("Sleeping...")
-        sleep(60)
+        sleep(90)
+        error_count+=1
+
     finally:
         if done:
             start_index = len(referenceURLs)
         else:
-            start_index = current_index + 1
+            start_index = curr_index
+    if error_count == 3:
+        print("reached max error amount, stopping program")
+        break
+    
+# Get previous data from df
+try:
+    old_df = pd.read_csv('watches.csv')
+except:
+    old_df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
+                                    "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
+                                    "dialMaterial","dialIndexes","dialHands"])
 
+# Concat data
+df = pd.concat([old_df, df], ignore_index=True)
 
 # Export watch references as .csv file
-df.to_csv('watches.csv')
+df.to_csv('watches.csv', index=False)
 
-
+file2 = open("start_index.txt", 'w')
+file2.write(str(curr_index))
+file2.close()
