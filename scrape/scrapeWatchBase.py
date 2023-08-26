@@ -139,6 +139,7 @@ while start_index < len(referenceURLs):
     try:
         for i in range(curr_index, len(referenceURLs) - 1):
             print("curr_index: " + str(curr_index))
+            print("curr_watch: " + str(referenceURLs[i]))
             watch = {"brand":"","family":"","reference":"","name":"","movement":"","produced":"","limited":"","caseMaterial":"",
                                        "caseGlass":"","caseBack":"","caseShape":"","caseDiameter":"","caseHeight":"","caseLugWidth":"","dialColor":"",
                                        "dialMaterial":"","dialIndexes":"","dialHands":""}
@@ -194,12 +195,14 @@ while start_index < len(referenceURLs):
         sleep(60)
         error_count+=1
 
-    except AttributeError:
+    except AttributeError as e:
         print("Unexpected error at index: ", curr_index)
+        print("error: ")
+        print(e)
         str_df = df.to_string
         print("current watches: " + str(str_df))
         print("Sleeping...")
-        sleep(90)
+        sleep(60)
         error_count+=1
 
     finally:
