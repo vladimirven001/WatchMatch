@@ -1,5 +1,6 @@
 import time
 import subprocess
+import datetime
 
 def run_my_script():
     subprocess.run(["python", "./scrape/scrapeWatchBase.py"])
@@ -7,5 +8,5 @@ def run_my_script():
 if __name__ == "__main__":
     while True:
         run_my_script()
-        print("Script executed. Waiting for 10 minutes...")
-        time.sleep(600)
+        print("Script executed. Waiting for 5 minutes and 2 seconds")
+        time.sleep(302)

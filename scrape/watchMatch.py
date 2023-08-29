@@ -12,14 +12,14 @@ except:
     
 def watch_match(givenWatch):
     # Combine descriptors into a single column
-    df['CombinedDescriptors'] = df.apply(lambda row: [row[col] for col in df.columns], axis=1)
+    df['CombinedDescriptors'] = df.apply(lambda row: [str(row[col]) for col in df.columns], axis=1)
 
     # Convert descriptors to binary indicators
     mlb = MultiLabelBinarizer()
     descriptor_matrix = mlb.fit_transform(df['CombinedDescriptors'])
 
     # Convert the given watch descriptors to binary
-    given_watch_binary = mlb.transform([list(givenWatch.values())])
+    given_watch_binary = mlb.transform([list(givenWatch)])
 
     # Calculate Jaccard similarity between the given watch and each row
     similarities = jaccard_score(given_watch_binary, descriptor_matrix, average=None)
@@ -32,3 +32,10 @@ def watch_match(givenWatch):
 
     print("Best Matching Row:")
     print(best_match_row)
+
+
+if __name__ == "__main__":
+    givenWatch = "a. lange & söhne,1815,236.049,1815 200th anniversary f. a. lange,a. lange & söhne caliber l051.1hours, minutes, small seconds,2015,platinum,sapphire,open,round,40.00 mm,8.80 mm,,black,silver,arabic numerals,alpha,yes, 200 units"
+    watch_match(givenWatch)
+    
+
