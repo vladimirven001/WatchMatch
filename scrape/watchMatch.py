@@ -46,6 +46,7 @@ def watch_match(givenWatch):
     given_watch_binary = mlb.transform([list(givenWatch)])  
    
     # Define a custom Jaccard similarity function
+    
     def jaccard_similarity(a, b):
         intersection = sum(min(x, y) for x, y in zip(a, b))
         union = sum(max(x, y) for x, y in zip(a, b))
