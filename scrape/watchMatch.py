@@ -15,26 +15,25 @@ try:
 except:
     dfCombined = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","limited","caseMaterial",
                                     "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
-                                    "dialMaterial","dialIndexes","dialHands","CombinedDescriptors"])
+                                    "dialMaterial","dialIndexes","dialHands","combinedDescriptors"])
 
 def combined_descriptors():
     # Combine descriptors into a single column
-    df['CombinedDescriptors'] = df.apply(lambda row: [str(row[col]) for col in df.columns], axis=1)
-    print(df['CombinedDescriptors'])
+    df['combinedDescriptors'] = df.apply(lambda row: [str(row[col]) for col in df.columns], axis=1)
+    print(df['combinedDescriptors'])
     df.to_csv('watchesCombined.csv', index=False)
 
+# Define a custom Jaccard similarity function
+def jaccard_similarity(a, b):
+    intersection = sum(min(x, y) for x, y in zip(a, b))
+    union = sum(max(x, y) for x, y in zip(a, b))
+    return intersection / union if union > 0 else 0.0
 
 def watch_match(givenWatch):
     # Convert descriptors to binary indicators
     mlb = MultiLabelBinarizer()
-    descriptor_matrix = mlb.fit_transform(str(dfCombined['CombinedDescriptors']))
+    descriptor_matrix = mlb.fit_transform(str(dfCombined['combinedDescriptors']))
     given_watch_binary = mlb.transform([list(givenWatch)])  
-    
-    # Define a custom Jaccard similarity function
-    def jaccard_similarity(a, b):
-        intersection = sum(min(x, y) for x, y in zip(a, b))
-        union = sum(max(x, y) for x, y in zip(a, b))
-        return intersection / union if union > 0 else 0.0
 
     # Calculate Jaccard similarity between the given watch and each row
     similarities = [jaccard_similarity(given_watch_binary[0], row) for row in descriptor_matrix]
