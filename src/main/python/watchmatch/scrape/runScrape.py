@@ -3,7 +3,7 @@ import subprocess
 import datetime
 
 def run_my_script():
-    subprocess.run(["python", "./scrape/scrapeWatchBase.py"])
+    subprocess.run(["python", "./src/main/python/watchmatch/scrape/scrapeWatchBase.py"])
 
 if __name__ == "__main__":
     while True:

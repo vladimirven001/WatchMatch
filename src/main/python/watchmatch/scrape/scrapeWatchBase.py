@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 from time import sleep
 import random
+import json
 
 HEADERS = [{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"}, 
     {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"},
@@ -59,11 +60,11 @@ referenceURLs = [] # List to store the URLs of each watch reference (leafs of th
 # Create data structure to store watch references and information
 df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","limited","caseMaterial",
                                "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
-                               "dialMaterial","dialIndexes","dialHands"])
+                               "dialMaterial","dialIndexes","dialHands","image", "price"])
 
 # Get the information for each watch reference
 j=0
-file1 = open("referenceURLs.txt","r")
+file1 = open("./src/main/ressources/referenceURLs.txt","r")
 referenceURLs = eval(file1.read())
 file1.close
 print("found referenceURLs")
@@ -127,7 +128,7 @@ start_index = 0
 error_count=0
 
 try:
-    file2 = open("start_index.txt", 'r')
+    file2 = open("./src/main/ressources/start_index.txt", 'r')
     start_index = int(file2.read())
 except:
     start_index = 0
@@ -142,7 +143,7 @@ while start_index < len(referenceURLs):
             print("curr_watch: " + str(referenceURLs[i]))
             watch = {"brand":"","family":"","reference":"","name":"","movement":"","produced":"","limited":"","caseMaterial":"",
                                        "caseGlass":"","caseBack":"","caseShape":"","caseDiameter":"","caseHeight":"","caseLugWidth":"","dialColor":"",
-                                       "dialMaterial":"","dialIndexes":"","dialHands":""}
+                                       "dialMaterial":"","dialIndexes":"","dialHands":"","image":"", "price":""}
             randomNum = random.randint(0,5)
             referencePage = requests.get(referenceURLs[i], headers=HEADERS[randomNum], timeout=timeout)
             soupModel = BeautifulSoup(referencePage.content, "html.parser")
@@ -157,7 +158,7 @@ while start_index < len(referenceURLs):
                 except:
                     continue
             div = soupModel.find('div', class_ = 'col-xs-6')
-
+            
             # Case info
             table = div.find('table', class_ = 'info-table')
             tableRows = table.find_all('tr')
@@ -182,6 +183,30 @@ while start_index < len(referenceURLs):
                     watch[collumn] = data
                 except:
                     continue
+            # Image info
+            div = div.find_next('div', class_ = 'col-xs-6')
+            picture = div.find('picture')
+            img = picture.find('img')
+            watch["image"] = img['src']
+            # Price info
+            div = soupModel.find('div', id = 'pricechart-container')
+            if div is not None:
+                canvas = div.find('canvas', id='pricechart')
+                priceURL = canvas['data-url']
+                pricePage = requests.get(priceURL, headers=HEADERS[0])
+                priceModel = BeautifulSoup(pricePage.content, "html.parser")
+                data_text = priceModel.get_text()
+                data = json.loads(data_text)
+
+                # Extracting the latest non-null element from 'data' list
+                latest_value = None
+                for value in reversed(data['datasets'][0]['data']):
+                    if value is not None:
+                        latest_value = value
+                        break
+
+                print(latest_value)
+                watch["price"] = latest_value
 
             # Add data to pandas df
             df.loc[j] = watch
@@ -216,7 +241,7 @@ while start_index < len(referenceURLs):
     
 # Get previous data from df
 try:
-    old_df = pd.read_csv('watches.csv')
+    old_df = pd.read_csv('./src/main/ressources/watches.csv')
 except:
     old_df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
                                     "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
@@ -226,8 +251,8 @@ except:
 df = pd.concat([old_df, df], ignore_index=True)
 
 # Export watch references as .csv file
-df.to_csv('watches.csv', index=False)
+df.to_csv('./src/main/ressources/watches.csv', index=False)
 
-file2 = open("start_index.txt", 'w')
+file2 = open("../start_index.txt", 'w')
 file2.write(str(curr_index))
 file2.close()
