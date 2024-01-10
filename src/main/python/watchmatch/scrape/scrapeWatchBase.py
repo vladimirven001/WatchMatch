@@ -20,12 +20,16 @@ models = [] # List to store models (nodes of the tree)
 modelURLs = [] # List to store the URLs of each model
 referenceURLs = [] # List to store the URLs of each watch reference (leafs of the brand trees)
 
-# Extract brand names
-# mainDiv = soup.find('div', id = "brand-container")
-# mainHeaders = mainDiv.find_all('h2')
-# for brand in mainHeaders:
-#     brands.append(brand.text.strip())
-# print("found brand names")
+def scrape_brand_names():
+    mainDiv = soup.find('div', id = "brand-container")
+    mainHeaders = mainDiv.find_all('h2')
+    file3 = open("./src/main/ressources/brandNames.txt",'w')
+    for brand in mainHeaders:
+        brands.append(brand.text.strip())
+        file3.write(brand.text.strip())
+    file3.close()
+    print("found brand names")
+    
 
 # Extract model names and model URLs
 # unorderedLists = mainDiv.find_all('ul')

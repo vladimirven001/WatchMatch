@@ -1,6 +1,5 @@
 import time
 import subprocess
-import datetime
 
 def run_my_script():
     subprocess.run(["python", "./src/main/python/watchmatch/scrape/scrapeWatchBase.py"])
