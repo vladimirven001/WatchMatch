@@ -1,0 +1,26 @@
+namespace watchmatch.model;
+
+class Watch {
+  autounique watchID;
+  produced;
+  caseMaterial;
+  caseGlass;
+  caseBack;
+  caseShape;
+  caseDiameter;
+  caseHeight;
+  caseLugWidth;
+  dialColor;
+  dialMaterial;
+  dialIndexes;
+  dialHands;
+  limited;
+}
+
+class WatchBrand {
+	1 watchBrand <@>- * WatchFamily watchFamily;
+}
+
+class WatchFamily {
+  1 watchFamily <@>- * Watch watch;
+}
