@@ -7,5 +7,8 @@ def run_my_script():
 if __name__ == "__main__":
     while True:
         run_my_script()
-        print("Script executed. Waiting for 5 minutes and 2 seconds")
-        time.sleep(302)
+        n = 30
+        mins = n // 60
+        secs = n - (mins * 60)
+        print("Script executed. Waiting for ", mins ," minutes and ", secs," seconds")
+        time.sleep(n)
