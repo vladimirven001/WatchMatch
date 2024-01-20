@@ -56,7 +56,7 @@ def scrape_reference_URLs():
         aTagsReferences = divReferences.find_all('a')
         for a in aTagsReferences:
             referenceURLs.append(a['href'])
-        sleep(1)
+        # sleep(1)
 
     # Save data
     file1 = open("./src/main/ressources/referenceURLs.txt","w")
@@ -222,4 +222,4 @@ def scrape_Watchbase():
     file3.close()
 
 if __name__ == "__main__":
-    scrape_Watchbase()
+    scrape_reference_URLs()
