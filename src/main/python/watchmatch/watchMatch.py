@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 
 try:
-    df = pd.read_csv('watches.csv')
+    df = pd.read_csv('./src/main/ressources/watches.csv')
 except:
     df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
                                     "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
@@ -42,14 +42,15 @@ def watch_match_cosine(given_watch, filters):
     for idx in closest_match_indices:
         watch = df.iloc[idx]
         brand = watch['brand']
+        price = watch['price']
         if (brand not in included_brands 
-            or brand not in filters["brand"] 
-            or (watch[['price']] is not None and int(watch[['price']]) < int(filters["minPrice"])) 
-            or (watch[['price']] is not None and int(watch[['price']]) > int(filters["maxPrice"])) 
-            or watch[['caseMaterial']] not in filters["caseMaterial"] 
-            or watch[['dialColor']] not in filters["dialColor"]):
+            and brand not in filters["excludedBrands"] 
+            and (price is not None and float(price) > float(filters["minPrice"])) 
+            and (price is not None and float(price) < float(filters["maxPrice"])) 
+            and watch[['caseMaterial']] not in filters["excludedCaseMaterials"] 
+            and watch[['dialColor']] not in filters["excludedDialColors"]):
             included_brands.add(brand)
-            results.append(watch[['brand', 'family', 'reference', 'name']])
+            results.append(watch[['brand', 'family', 'reference', 'name', 'price']])
         if len(results) >= 11:
             break
 
@@ -90,7 +91,7 @@ def watch_match_jaccard(givenWatch):
 
 if __name__ == "__main__":
     given_watch = "a. lange & söhne,1815,236.049,1815 200th anniversary f. a. lange,a. lange & söhne caliber l051.1hours, minutes, small seconds,2015,platinum,sapphire,open,round,40.00 mm,8.80 mm,,black,silver,arabic numerals,alpha,yes, 200 units"
-    filters = {"brand":[],"minPrice":"","maxPrice":"","caseMaterial":[],"dialColor":[]}
-    watch_match_cosine(given_watch)
+    filters = {"excludedBrands":[],"minPrice":"1000","maxPrice":"1500","excludedCaseMaterials":[],"excludedDialColors":[]}
+    watch_match_cosine(given_watch, filters)
     
 
