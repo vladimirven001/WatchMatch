@@ -4,6 +4,7 @@ from sklearn.metrics import jaccard_score
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
+import math
 
 try:
     df = pd.read_csv('./src/main/ressources/watches.csv')
@@ -43,14 +44,20 @@ def watch_match_cosine(given_watch, filters):
         watch = df.iloc[idx]
         brand = watch['brand']
         price = watch['price']
+        minPrice = 0
+        if filters["minPrice"] != "":
+            minPrice = float(filters["minPrice"])
+        maxPrice = math.inf
+        if filters["maxPrice"] != "":
+            maxPrice = float(filters["maxPrice"])
         if (brand not in included_brands 
             and brand not in filters["excludedBrands"] 
-            and (price is not None and float(price) > float(filters["minPrice"])) 
-            and (price is not None and float(price) < float(filters["maxPrice"])) 
+            and (price is not None and float(price) > minPrice) 
+            and (price is not None and float(price) < maxPrice) 
             and watch[['caseMaterial']] not in filters["excludedCaseMaterials"] 
             and watch[['dialColor']] not in filters["excludedDialColors"]):
             included_brands.add(brand)
-            results.append(watch[['brand', 'family', 'reference', 'name', 'price']])
+            results.append(watch[['brand', 'family', 'reference', 'name', 'price', 'image']])
         if len(results) >= 11:
             break
 
@@ -90,8 +97,8 @@ def watch_match_jaccard(givenWatch):
     print(best_match_row)
 
 if __name__ == "__main__":
-    given_watch = "a. lange & söhne,1815,236.049,1815 200th anniversary f. a. lange,a. lange & söhne caliber l051.1hours, minutes, small seconds,2015,platinum,sapphire,open,round,40.00 mm,8.80 mm,,black,silver,arabic numerals,alpha,yes, 200 units"
-    filters = {"excludedBrands":[],"minPrice":"1000","maxPrice":"1500","excludedCaseMaterials":[],"excludedDialColors":[]}
+    given_watch = "omega,seamaster diver 300m,210.90.42.20.01.001(aka: 21090422001001, james bond, no time to die, 007),seamaster diver 300m master co-axial 42 james bond no time to die / bracelet,omega caliber 8806hours, minutes, seconds | chronometer, co-axial escapement,2019/12,titanium,sapphire,closed,round,42.00 mm,,,brown,aluminium,stick / dot,sword,https://cdn.watchbase.com/watch/lg/omega/seamaster-diver-300m/210-90-42-20-01-001-13.png,10900.0,no"
+    filters = {"excludedBrands":[],"minPrice":"","maxPrice":"500","excludedCaseMaterials":[],"excludedDialColors":[]}
     watch_match_cosine(given_watch, filters)
     
 
