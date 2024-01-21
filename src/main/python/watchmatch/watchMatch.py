@@ -13,6 +13,8 @@ except:
                                     "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
                                     "dialMaterial","dialIndexes","dialHands", "image", "price"])
 
+pd.set_option('display.max_colwidth', 240)
+
 def watch_match_cosine(given_watch, filters):
     # Combine all attributes into a single string per watch
     df['watch_attributes'] = df.apply(lambda x: ', '.join(str(val) for val in x), axis=1)
@@ -97,8 +99,8 @@ def watch_match_jaccard(givenWatch):
     print(best_match_row)
 
 if __name__ == "__main__":
-    given_watch = "omega,seamaster diver 300m,210.90.42.20.01.001(aka: 21090422001001, james bond, no time to die, 007),seamaster diver 300m master co-axial 42 james bond no time to die / bracelet,omega caliber 8806hours, minutes, seconds | chronometer, co-axial escapement,2019/12,titanium,sapphire,closed,round,42.00 mm,,,brown,aluminium,stick / dot,sword,https://cdn.watchbase.com/watch/lg/omega/seamaster-diver-300m/210-90-42-20-01-001-13.png,10900.0,no"
-    filters = {"excludedBrands":[],"minPrice":"","maxPrice":"500","excludedCaseMaterials":[],"excludedDialColors":[]}
+    given_watch = "a. lange & söhne,1815,730.032(aka: 730032f, 730032),1815 tourbillon pink gold,a. lange & söhne caliber l102.1hours, minutes, small seconds | tourbillon escapement,2014,pink gold,sapphire,open,,39.50 mm,11.10 mm,20.00 mm,silver,silver,arabic numerals,alpha,https://cdn.watchbase.com/watch/lg/a-lange-sohne/1815/730-032-9f.jpg,160800.0,no"
+    filters = {"excludedBrands":[],"minPrice":"","maxPrice":"1500","excludedCaseMaterials":[],"excludedDialColors":[]}
     watch_match_cosine(given_watch, filters)
     
 
