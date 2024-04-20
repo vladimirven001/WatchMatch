@@ -83,9 +83,9 @@ def check_new_watches(txt_file):
                 missingURLs.append(newReferenceURLs[i])
             elif oldReferenceURLs[i] not in newReferenceURLs:
                 missingURLs.append(oldReferenceURLs[i])
-    file2 = open("./src/main/ressources/missingURLs.txt","w")
+    file2 = open("./src/backend/ressources/missingURLs.txt","w")
     file2.write(str(missingURLs))
     file2.close
 
 if __name__ == "__main__":
-    check_new_watches('./src/main/ressources/referenceURLs.txt')
+    check_new_watches('./src/backend/ressources/referenceURLs.txt')

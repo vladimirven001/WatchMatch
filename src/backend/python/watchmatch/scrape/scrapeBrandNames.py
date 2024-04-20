@@ -7,7 +7,7 @@ def scrape_brand_names():
     brands = [] # List to store brand of the watch (roots of the trees)
     mainDiv = soup.find('div', id = "brand-container")
     mainHeaders = mainDiv.find_all('h2')
-    file3 = open("./src/main/ressources/brandNames.txt",'w')
+    file3 = open("./src/backend/ressources/brandNames.txt",'w')
     for brand in mainHeaders:
         brands.append(brand.text.strip())
         file3.write(brand.text.strip() + "\n")

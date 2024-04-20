@@ -24,7 +24,7 @@ referenceURLs = [] # List to store the URLs of each watch reference (leafs of th
 def scrape_brand_names():
     mainDiv = soup.find('div', id = "brand-container")
     mainHeaders = mainDiv.find_all('h2')
-    file3 = open("./src/main/ressources/brandNames.txt",'w')
+    file3 = open("./src/backend/ressources/brandNames.txt",'w')
     for brand in mainHeaders:
         brands.append(brand.text.strip())
         file3.write(brand.text.strip())
@@ -59,7 +59,7 @@ def scrape_reference_URLs():
         sleep(1)
 
     # Save data
-    file1 = open("./src/main/ressources/referenceURLs.txt","w")
+    file1 = open("./src/backend/ressources/referenceURLs.txt","w")
     file1.write(str(referenceURLs))
     file1.close
     print("found referenceURLs")
@@ -72,7 +72,7 @@ def scrape_Watchbase():
 
     # Get the information for each watch reference
     j=0
-    file1 = open("./src/main/ressources/referenceURLs.txt","r")
+    file1 = open("./src/backend/ressources/referenceURLs.txt","r")
     referenceURLs = eval(file1.read())
     file1.close
     print("found referenceURLs")
@@ -84,7 +84,7 @@ def scrape_Watchbase():
     error_count=0
 
     try:
-        file2 = open("./src/main/ressources/start_index.txt", 'r')
+        file2 = open("./src/backend/ressources/start_index.txt", 'r')
         start_index = int(file2.read())
         file2.close()
     except:
@@ -205,7 +205,7 @@ def scrape_Watchbase():
         
     # Get previous data from df
     try:
-        old_df = pd.read_csv('./src/main/ressources/watches.csv')
+        old_df = pd.read_csv('./src/backend/ressources/watches.csv')
     except:
         old_df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
                                         "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
@@ -215,9 +215,9 @@ def scrape_Watchbase():
     df = pd.concat([old_df, df], ignore_index=True)
 
     # Export watch references as .csv file
-    df.to_csv('./src/main/ressources/watches.csv', index=False)
+    df.to_csv('./src/backend/ressources/watches.csv', index=False)
 
-    file3 = open("./src/main/ressources/start_index.txt", 'w')
+    file3 = open("./src/backend/ressources/start_index.txt", 'w')
     file3.write(str(curr_index))
     file3.close()
 
