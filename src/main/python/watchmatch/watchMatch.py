@@ -99,7 +99,7 @@ def watch_match_jaccard(givenWatch):
     print(best_match_row)
 
 if __name__ == "__main__":
-    given_watch = "a. lange & söhne,1815,730.032(aka: 730032f, 730032),1815 tourbillon pink gold,a. lange & söhne caliber l102.1hours, minutes, small seconds | tourbillon escapement,2014,pink gold,sapphire,open,,39.50 mm,11.10 mm,20.00 mm,silver,silver,arabic numerals,alpha,https://cdn.watchbase.com/watch/lg/a-lange-sohne/1815/730-032-9f.jpg,160800.0,no"
+    given_watch = "a. lange & söhne,lange 1,192.029(aka: 192029),lange 1 moonphase day / night white gold / black,a. lange & söhne caliber l121.3hours, minutes, small seconds, day / night indication | big date | power reserve indicator,2016,white gold,sapphire,open,round,38.50 mm,10.50 mm,20.00 mm,black,silver,mixed,alpha,https://cdn.watchbase.com/watch/lg/a-lange-sohne/lange-1/192-029-7b.jpg,55500.0,no"
     filters = {"excludedBrands":[],"minPrice":"","maxPrice":"1500","excludedCaseMaterials":[],"excludedDialColors":[]}
     watch_match_cosine(given_watch, filters)
     

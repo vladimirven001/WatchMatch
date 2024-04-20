@@ -1,24 +1,34 @@
+'use client'
+
 import React from 'react';
-import stylesNavbar from '../styles/Navbar.module.css';
+import style from '../style/style.module.css';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface NavbarProps {}
 
 const Navbar: React.FC<NavbarProps> = ({ }) => {
+    const router = useRouter();
+    const pathname = usePathname();
+
     const navItems = [
         { text: 'WatchMatch', href: '/' },
-        { text: 'About', href: './about' },
-        { text: 'Contact', href: './contact' },
+        { text: 'About', href: '/about' },
+        { text: 'Contact', href: '/contact' },
     ];
 
     return (
-        <nav className="navbar">
+        <div className={style.navbarMainDiv}>
             {navItems.map((item, index) => (
-                <Link key={index} href={item.href} className={stylesNavbar.item}>
-                    {item.text}
-                </Link>
+                <div className={style.navbarContainer}>
+                    <div key={index} className={`${style.navbarItem} ${pathname === item.href ? style.navbarItemActive : ''}`}>
+                        <Link href={item.href}>
+                            {item.text}
+                        </Link>
+                    </div>
+                </div>
             ))}
-        </nav>
+        </div>
     );
 };
 

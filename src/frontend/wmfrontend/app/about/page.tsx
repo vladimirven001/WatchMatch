@@ -1,13 +1,12 @@
 import React from 'react';
 import Navbar from '../_components/navbar';
-import styles from '../styles/WatchMatch.module.css';
 
-const App: React.FC = () => {
+const about: React.FC = () => {
     return (
-        <div className={styles.mainDiv}>
+        <div>
             <Navbar />
         </div>
     );
 };
 
-export default App;
+export default about;
