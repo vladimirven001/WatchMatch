@@ -1,10 +1,12 @@
-import time
+import math
 import pandas as pd
+
 from sklearn.metrics import jaccard_score
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-import math
+
+from flask import Flask
 
 try:
     df = pd.read_csv('./src/backend/ressources/watches.csv')

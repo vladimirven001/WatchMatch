@@ -1,11 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=FAMILY_NAME:wght@WEIGHT_OR_RANGE&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sedan:ital@0;1&display=swap');
 
 :root {
-  --foreground-rgb: #FFF6EE;
-  --text-color: #631103;
+  --foreground-rgb: #F5F5F4;
+  --text-color: #20201D;
+  color: #20201D;
+  background-color: #F5F5F4;
 }
 
 @media (prefers-color-scheme: dark) {
