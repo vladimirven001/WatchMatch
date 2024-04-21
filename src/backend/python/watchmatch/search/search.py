@@ -1,21 +1,22 @@
-import time
 import pandas as pd
+import numpy as np
 from sklearn.metrics import jaccard_score
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-import math
 
-try:
-    df = pd.read_csv('./src/backend/ressources/watches.csv')
-except:
-    df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
-                                    "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
+def watch_match_cosine_search(given_watch):
+    # Load the dataset
+    try:
+        df = pd.read_csv('./src/backend/ressources/watches.csv')
+    except:
+        df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
+                                        "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
                                     "dialMaterial","dialIndexes","dialHands", "image", "price"])
+    
+    # Remove NaN values from the dataset
+    df = df.replace([np.nan, -np.inf], 0)
 
-pd.set_option('display.max_colwidth', 240)
-
-def watch_match_cosine(given_watch):
     # Combine all attributes into a single string per watch
     df['watch_attributes'] = df.apply(lambda x: ', '.join(str(val) for val in x), axis=1)
 
@@ -41,10 +42,19 @@ def watch_match_cosine(given_watch):
     top_indices = closest_match_indices[:20]
 
     # Get the details of the closest matches (one per brand)
-    results = list(map(lambda idx: df.iloc[idx], top_indices))
-    print(results)
+    results = [df.iloc[idx].to_dict() for idx in top_indices]
+
+    return results
 
 def watch_match_jaccard(givenWatch):
+    # Load the dataset
+    try:
+        df = pd.read_csv('./src/backend/ressources/watches.csv')
+    except:
+        df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
+                                        "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
+                                    "dialMaterial","dialIndexes","dialHands", "image", "price"])
+        
     # Combine descriptors into a single column
     df['CombinedDescriptors'] = df.apply(lambda row: [str(row[col]) for col in df.columns], axis=1)
 
@@ -71,10 +81,9 @@ def watch_match_jaccard(givenWatch):
 
     print("Best Matching Row:")
     print(best_match_row)
+    
+def search(given_watch):
+    return watch_match_cosine_search(given_watch)
 
 if __name__ == "__main__":
-    # given_watch = "a. lange & söhne,1815,730.032(aka: 730032f, 730032),1815 tourbillon pink gold,a. lange & söhne caliber l102.1hours, minutes, small seconds | tourbillon escapement,2014,pink gold,sapphire,open,,39.50 mm,11.10 mm,20.00 mm,silver,silver,arabic numerals,alpha,https://cdn.watchbase.com/watch/lg/a-lange-sohne/1815/730-032-9f.jpg,160800.0,no"
-    given_watch = "a. lange & söhne,1815,730.032(aka: 730032f, 730032),1815 tourbillon pink gold,a. lange & söhne caliber l102.1hours"
-    watch_match_cosine(given_watch)
-    
-
+    print(search("a langhe & sohne"))

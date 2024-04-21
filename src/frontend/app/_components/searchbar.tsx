@@ -1,38 +1,44 @@
+'use client'
+
 import React, { useState } from 'react';
+import style from '../style/Searchbar.module.css';
 
 const SearchBar: React.FC = () => {
     const [searchText, setSearchText] = useState('');
 
-    const handleSearch = async () => {
+    const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
-            // Call your Python backend API here
-            const response = await fetch('/api/search', {
-                method: 'POST',
-                body: JSON.stringify({ searchText }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            const response = await fetch('http://localhost:5000/search/' + searchText, {
+                method: 'GET',
             });
-
-            // Handle the response from the backend
             const data = await response.json();
-            console.log(data); // Do something with the response data
+            console.log(data);
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
+    // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    //     if (e.key === 'Enter') {
+    //         handleSearch();
+    //     }
+    // };
+
     return (
-        <div>
-            <input
-                type="text"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-            />
-            <button onClick={handleSearch}>
-                <img src="/path/to/search-logo.png" alt="Search" />
-            </button>
-        </div>
+        <form onSubmit={handleSearch}>
+            <div className={style.searchbarContainer}>
+                <span className="material-symbols-outlined" style={{fontSize:"30px", color:"#9CA3AF"}}>search</span>
+                <input
+                    type="search"
+                    value={searchText}
+                    placeholder='Search watches'
+                    onChange={(e) => setSearchText(e.target.value)}
+                    // onKeyDown={handleKeyDown}
+                    className={style.searchbarInput}
+                />
+            </div>
+        </form>
     );
 };
 

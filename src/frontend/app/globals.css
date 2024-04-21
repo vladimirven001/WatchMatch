@@ -4,20 +4,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Sedan:ital@0;1&display=swap');
 
 :root {
-  --foreground-rgb: #F5F5F4;
   --text-color: #20201D;
+  --backround-color: #F5F5F4;
   color: #20201D;
   background-color: #F5F5F4;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
+    --text-color: #F5F5F4;
+    --backround-color: #20201D;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  color: rgb(var(--text-color));
 }
 
 @layer utilities {
