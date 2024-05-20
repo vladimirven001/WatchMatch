@@ -11,7 +11,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 try:
-    df = pd.read_csv('./src/backend/ressources/watches.csv')
+    df = pd.read_csv('./ressources/watches.csv')
 except:
     df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
                                     "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
@@ -67,13 +67,6 @@ def watch_match_cosine(given_watch, filters):
         if len(results) >= 11:
             break
 
-    # print("\n")
-    # print("One Watch Per Brand (First 10 Matches):")
-    # for i in range(len(results)):
-    #     if i != 0:
-    #         print(results[i])
-    #         print("\n")
-
     return results
 
 def watch_match_jaccard(givenWatch):
@@ -113,9 +106,8 @@ def match_cosine():
     return jsonify(results)
 
 if __name__ == "__main__":
-    # given_watch = "a. lange & söhne,1815,730.032(aka: 730032f, 730032),1815 tourbillon pink gold,a. lange & söhne caliber l102.1hours, minutes, small seconds | tourbillon escapement,2014,pink gold,sapphire,open,,39.50 mm,11.10 mm,20.00 mm,silver,silver,arabic numerals,alpha,https://cdn.watchbase.com/watch/lg/a-lange-sohne/1815/730-032-9f.jpg,160800.0,no"
-    # filters = {"excludedBrands":[],"minPrice":"","maxPrice":"1500","excludedCaseMaterials":[],"excludedDialColors":[]}
-    # watch_match_cosine(given_watch, filters)
-    app.run(debug=True)
+    given_watch = "a. lange & söhne,1815,730.032(aka: 730032f, 730032),1815 tourbillon pink gold,a. lange & söhne caliber l102.1hours, minutes, small seconds | tourbillon escapement,2014,pink gold,sapphire,open,,39.50 mm,11.10 mm,20.00 mm,silver,silver,arabic numerals,alpha,https://cdn.watchbase.com/watch/lg/a-lange-sohne/1815/730-032-9f.jpg,160800.0,no"
+    filters = {"excludedBrands":[],"minPrice":"","maxPrice":"1500","excludedCaseMaterials":[],"excludedDialColors":[]}
+    watch_match_cosine(given_watch, filters)
     
 

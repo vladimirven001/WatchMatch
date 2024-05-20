@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 def watch_match_cosine_search(given_watch):
     # Load the dataset
     try:
-        df = pd.read_csv('./src/backend/ressources/watches.csv')
+        df = pd.read_csv('./ressources/watches.csv')
     except:
         df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
                                         "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",
@@ -39,17 +39,22 @@ def watch_match_cosine_search(given_watch):
     closest_match_indices = similarities.argsort()[0][::-1]
 
     # Keep only top 20 indices
-    top_indices = closest_match_indices[:20]
+    top_indices = closest_match_indices[:100]
 
     # Get the details of the closest matches (one per brand)
     results = [df.iloc[idx].to_dict() for idx in top_indices]
+
+    # Capitalize the brand names
+    for result in results:
+        result['brand'] = result['brand'].capitalize()
+        result['family'] = result['family'].capitalize()
 
     return results
 
 def watch_match_jaccard(givenWatch):
     # Load the dataset
     try:
-        df = pd.read_csv('./src/backend/ressources/watches.csv')
+        df = pd.read_csv('./ressources/watches.csv')
     except:
         df = pd.DataFrame(columns = ["brand","family","reference","name","movement","produced","caseMaterial",
                                         "caseGlass","caseBack","caseShape","caseDiameter","caseHeight","caseLugWidth","dialColor",

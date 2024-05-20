@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from './_components/navbar';
-import SearchBar from './_components/searchbar';
+import SearchBar from './_components/search';
 import style from './style/Home.module.css';
 
 export default function Home() {
@@ -10,6 +10,7 @@ export default function Home() {
             <div className={style.search}>
                 <SearchBar />
             </div>
+
         </div>
     )
 }
