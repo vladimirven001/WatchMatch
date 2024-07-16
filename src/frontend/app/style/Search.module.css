@@ -102,5 +102,25 @@
 /* Watch Match */
 
 .watchMatchSearch {
+    --padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--padding);
+    margin-top: 20px;
+}
 
+.watchSearchButton {
+    --padding: 1rem;
+    background-color: #20201D;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: calc(var(--padding) * 3);
+    cursor: pointer;
+}
+
+.watchSearchButton:hover {
+    background-color: #3D3C3A;
+    transition: 0.2s;
 }

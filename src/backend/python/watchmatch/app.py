@@ -21,6 +21,7 @@ def search_match_api(given_watch):
         print(e)
         filters = {"excludedBrands":[],"minPrice":"","maxPrice":"","excludedCaseMaterials":[],"excludedDialColors":[]}
     results = watch_match_cosine(given_watch=given_watch, filters=filters)
+    print(results)
     return jsonify(results)
 
 if __name__ == "__main__":

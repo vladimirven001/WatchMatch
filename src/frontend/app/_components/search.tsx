@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import style from '../style/Search.module.css';
+import { Button } from '@mui/base/Button';
 
 const SearchBar: React.FC = () => {
     const [searchText, setSearchText] = useState('');
@@ -60,7 +62,6 @@ const SearchBar: React.FC = () => {
                 </div>
                 {isEmpty && <p style={{ color: 'red', marginTop:'10px'}}>Please enter a search term</p>}
             </form>
-            {/* Render search results component based on search query */}
             {searchText !== '' && <SearchResults searchResults={searchResults} />}
         </div>
     );
@@ -69,9 +70,16 @@ const SearchBar: React.FC = () => {
 // Display search results
 const SearchResults: React.FC<{ searchResults: any[] }> = ({ searchResults }) => {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+    const router = useRouter();
 
     const toggleExpanded = (index: number) => {
         setExpandedIndex(index);
+    };
+
+    const handleWatchMatch = (watchAttributes: any) => {
+        localStorage.setItem('watchMatchRequest', JSON.stringify(watchAttributes));
+        localStorage.setItem('searched', "true");
+        router.push('/watchmatch');
     };
 
     return (
@@ -81,7 +89,7 @@ const SearchResults: React.FC<{ searchResults: any[] }> = ({ searchResults }) =>
                     <li key={index} className={style.watchContainer} onClick={() => toggleExpanded(index)}>
                         <div className={style.watchContent}>
                             <div className={style.watchInformation}>
-                                <p className={style.watchTitle}>{result.brand} {result.family}</p>
+                                <p className={style.watchTitle}>{result.brand} {result.family}</p>                                
                                 <div className={style.watchInformationText}>
                                     <p><span style={{fontWeight:"bold"}}>Watch Reference:</span> {result.reference}</p>
                                     <p><span style={{fontWeight:"bold"}}>Case Diameter:</span> {result.caseDiameter}</p>
@@ -93,7 +101,14 @@ const SearchResults: React.FC<{ searchResults: any[] }> = ({ searchResults }) =>
                         </div>
                         {expandedIndex === index && (
                             <div className={style.watchMatchSearch}>
-                                {/* insert dropdown here */}
+                                <div>
+                                    <Button 
+                                        className={style.watchSearchButton} 
+                                        onClick={() => handleWatchMatch(result)}
+                                    >
+                                        Find watch matches
+                                    </Button>
+                                </div>
                             </div>
                         )}
                     </li>
